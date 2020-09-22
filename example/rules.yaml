@@ -1,2 +1,2 @@
-- JSONPath: ".value"
-  Repl: "replaced"
+- jsonpath: ".value"
+  repl: "replaced"

@@ -12,6 +12,9 @@ import (
 )
 
 func Inject(keyValues []etcdclient.KeyValue, rules []rulesource.Rule) (results []etcdclient.KeyValue, err error) {
+	if len(rules) == 0 {
+		return keyValues, nil
+	}
 	for _, rule := range rules {
 		for _, kv := range keyValues {
 			result, err := injectOne(kv.Value, rule.JSONPath, rule.Repl)

@@ -16,7 +16,7 @@ type Config struct {
 }
 
 type Client struct {
-	*clientv3.Client
+	clientv3.Client
 }
 
 type KeyValue struct {
@@ -35,12 +35,15 @@ func New(c Config) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Client{cli}, nil
+	return &Client{*cli}, nil
 }
 
 func (c *Client) LsRecursive(dirname string) ([]KeyValue, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
 	opts := []clientv3.OpOption{clientv3.WithPrefix()}
-	resp, err := c.Client.Get(context.Background(), dirname, opts...)
+	resp, err := c.Client.Get(ctx, dirname, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +59,10 @@ func (c *Client) LsRecursive(dirname string) ([]KeyValue, error) {
 }
 
 func (c *Client) Put(kv KeyValue) error {
-	if _, err := c.Client.Put(context.Background(), kv.Key, string(kv.Value)); err != nil {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	if _, err := c.Client.Put(ctx, kv.Key, string(kv.Value)); err != nil {
 		return err
 	}
 	return nil

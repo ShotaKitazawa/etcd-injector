@@ -25,6 +25,7 @@ func Run(c config) error {
 	}
 	defer dstClient.Close()
 
+	//
 	// load rules
 	rules, err := file.GetRules(c.RulesFilepath)
 	if err != nil {
@@ -45,7 +46,7 @@ func Run(c config) error {
 
 	// replace keys & set values to destination etcd
 	for _, kv := range results {
-		strings.Replace(kv.Key, c.SrcDirectory, c.DstDirectory, 1)
+		kv.Key = strings.Replace(kv.Key, c.SrcDirectory, c.DstDirectory, 1)
 
 		err := dstClient.Put(kv)
 		if err != nil {

@@ -15,7 +15,7 @@ func GetRules(filepath string) ([]rulesource.Rule, error) {
 	}
 	// if file is empty
 	if len(buf) == 0 {
-		return nil, nil
+		return []rulesource.Rule{}, nil
 	}
 
 	// unmarshal
