@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	appName    = "etcd-replacer"
+	appName    = "etcd-injector"
 	appVersion = "dummy"
 )
 
@@ -26,7 +26,7 @@ func newApp() *cli.App {
 	app := cli.NewApp()
 	app.Name = appName
 	app.Version = appVersion
-	app.Usage = "recursive copy & replace json value of etcd"
+	app.Usage = "recursive copy & inject json value of etcd"
 	app.Flags = []cli.Flag{
 		&cli.StringSliceFlag{
 			Name:     "src-endpoints",
@@ -57,7 +57,7 @@ func newApp() *cli.App {
 		&cli.StringFlag{
 			Name:     "rules-filepath",
 			Aliases:  []string{"f"},
-			Usage:    "path of file written replace rules",
+			Usage:    "path of file written injection rules",
 			Required: true,
 			EnvVars:  []string{"RULES_FILEPATH"},
 		},

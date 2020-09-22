@@ -3,7 +3,7 @@ package file
 import (
 	"io/ioutil"
 
-	"github.com/ShotaKitazawa/etcd-replacer/pkg/rulesource"
+	"github.com/ShotaKitazawa/etcd-injector/pkg/rulesource"
 	"gopkg.in/yaml.v2"
 )
 

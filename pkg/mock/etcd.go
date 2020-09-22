@@ -12,7 +12,7 @@ func StartEtcdServer() ([]string, error) {
 	// TODO: undisplay log
 	if err := func() error {
 		cfg := embed.NewConfig()
-		cfg.Dir = "/tmp/.etcd-replacer.test.etcd"
+		cfg.Dir = "/tmp/.etcd-injector.test.etcd"
 		e, err := embed.StartEtcd(cfg)
 		if err != nil {
 			panic(err)

@@ -4,17 +4,17 @@ import (
 	"context"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"go.etcd.io/etcd/clientv3"
 
-	"github.com/ShotaKitazawa/etcd-replacer/pkg/mock"
+	"github.com/ShotaKitazawa/etcd-injector/pkg/mock"
 )
 
 var etcdEndpointsForTest []string
 
 func TestLsRecursive(t *testing.T) {
-	t.Parallel()
 	client, err := New(Config{
 		Endpoints: etcdEndpointsForTest,
 	})
@@ -55,7 +55,6 @@ func TestLsRecursive(t *testing.T) {
 }
 
 func TestPut(t *testing.T) {
-	t.Parallel()
 	client, err := New(Config{
 		Endpoints: etcdEndpointsForTest,
 	})
@@ -92,9 +91,22 @@ func TestPut(t *testing.T) {
 func TestMain(m *testing.M) {
 	var err error
 
-	etcdEndpointsForTest, err = mock.StartEtcdServer()
-	if err != nil {
-		panic(err)
+	// run etcd server (retry: 10s * 6)
+	for i := 1; i <= 6; i++ {
+		var errRecorver error
+		if err := func() error {
+			defer func() {
+				var ok bool
+				if errRecorver, ok = recover().(error); ok && errRecorver != nil {
+					time.Sleep(time.Second * 10)
+				}
+			}()
+			etcdEndpointsForTest, err = mock.StartEtcdServer()
+			return err
+		}(); err != nil || errRecorver != nil {
+			continue
+		}
+		break
 	}
 
 	// put initialize value by go.etcd.io/etcd/clientv3

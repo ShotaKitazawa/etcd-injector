@@ -1,5 +1,5 @@
 ### About
 
-recursive copy & replace json value of etcd
+recursive copy & inject (or replace) json value of etcd
 
 ![comcept](./images/comcept.png)

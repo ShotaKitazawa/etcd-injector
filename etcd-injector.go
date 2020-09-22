@@ -3,9 +3,9 @@ package main
 import (
 	"strings"
 
-	"github.com/ShotaKitazawa/etcd-replacer/pkg/etcdclient"
-	"github.com/ShotaKitazawa/etcd-replacer/pkg/replacer"
-	"github.com/ShotaKitazawa/etcd-replacer/pkg/rulesource/file"
+	"github.com/ShotaKitazawa/etcd-injector/pkg/etcdclient"
+	"github.com/ShotaKitazawa/etcd-injector/pkg/injector"
+	"github.com/ShotaKitazawa/etcd-injector/pkg/rulesource/file"
 )
 
 func Run(c config) error {
@@ -37,8 +37,8 @@ func Run(c config) error {
 		return err
 	}
 
-	// replace values based rule
-	results, err := replacer.Replace(keyValues, rules)
+	// inject (or replace) values based rule
+	results, err := injector.Inject(keyValues, rules)
 	if err != nil {
 		return err
 	}
