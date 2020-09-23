@@ -54,6 +54,29 @@ func TestInjector(t *testing.T) {
 				{Key: "/test/src/1", Value: []byte(`{"hoge":"ooo","injected":"value"}`)},
 			},
 		},
+		{
+			"normal_3",
+			[]etcdclient.KeyValue{
+				{Key: "/test/src/1", Value: []byte(`{"fuga":"xxx","hoge":"ooo"}`)},
+			},
+			[]rulesource.Rule{
+				{JSONPath: ".hoge", Repl: "replaced_hoge"},
+				{JSONPath: ".fuga", Repl: "replaced_fuga"},
+			},
+			[]etcdclient.KeyValue{
+				{Key: "/test/src/1", Value: []byte(`{"fuga":"replaced_fuga","hoge":"replaced_hoge"}`)},
+			},
+		},
+		{
+			"normal_3",
+			[]etcdclient.KeyValue{
+				{Key: "/test/src/1", Value: []byte(`{"fuga":"xxx","hoge":"ooo"}`)},
+			},
+			[]rulesource.Rule{},
+			[]etcdclient.KeyValue{
+				{Key: "/test/src/1", Value: []byte(`{"fuga":"xxx","hoge":"ooo"}`)},
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
