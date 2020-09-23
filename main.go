@@ -36,7 +36,7 @@ func newApp() *cli.App {
 		},
 		&cli.StringSliceFlag{
 			Name:     "dst-endpoints",
-			Usage:    "destination directory of etcd",
+			Usage:    "destination endpoints of etcd",
 			Required: true,
 			EnvVars:  []string{"ETCD_DST_ENDPOINTS"},
 		},
