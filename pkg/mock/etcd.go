@@ -1,13 +1,41 @@
 package mock
 
 import (
+	"time"
+
 	"go.etcd.io/etcd/embed"
 	"go.etcd.io/etcd/pkg/osutil"
 )
 
-var etcdEndpointsForMock = []string{"http://localhost:2379"}
+const (
+	retryCount = 6
+)
 
-func StartEtcdServer() ([]string, error) {
+var (
+	etcdEndpointsForMock = []string{"http://localhost:2379"}
+)
+
+func StartEtcdServer() (etcdEndpoints []string, err error) {
+	for i := 1; i <= retryCount; i++ {
+		var errRecorver error
+		if err := func() error {
+			defer func() {
+				var ok bool
+				if errRecorver, ok = recover().(error); ok && errRecorver != nil {
+					time.Sleep(time.Second * 10)
+				}
+			}()
+			etcdEndpoints, err = startEtcdServer()
+			return err
+		}(); err != nil || errRecorver != nil {
+			continue
+		}
+		break
+	}
+	return etcdEndpoints, nil
+}
+
+func startEtcdServer() ([]string, error) {
 	// run etcd server
 	// TODO: undisplay log
 	if err := func() error {
