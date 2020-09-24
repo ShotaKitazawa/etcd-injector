@@ -25,7 +25,6 @@ func Run(c config) error {
 	}
 	defer dstClient.Close()
 
-	//
 	// load rules
 	rules, err := file.GetRules(c.RulesFilepath)
 	if err != nil {

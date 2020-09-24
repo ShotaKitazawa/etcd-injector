@@ -87,9 +87,6 @@ func TestMain(m *testing.M) {
 	// test
 	status := m.Run()
 
-	// for debug
-	time.Sleep(time.Minute * 5)
-
 	// exit
 	os.Exit(status)
 }
