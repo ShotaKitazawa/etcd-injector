@@ -1,4 +1,4 @@
-package injector
+package inject
 
 import (
 	"os"
@@ -10,6 +10,7 @@ import (
 )
 
 func TestInjector(t *testing.T) {
+	i := NewInjector(false)
 	tests := []struct {
 		name      string
 		keyValues []etcdclient.KeyValue
@@ -80,7 +81,7 @@ func TestInjector(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			results, err := Inject(tt.keyValues, tt.rules)
+			results, err := i.Inject(tt.keyValues, tt.rules)
 
 			assert.NoError(t, err)
 			assert.Equal(t, tt.results, results)
@@ -90,6 +91,7 @@ func TestInjector(t *testing.T) {
 }
 
 func Test_injectOne(t *testing.T) {
+	i := NewInjector(false)
 	tests := []struct {
 		name     string
 		input    []byte
@@ -103,7 +105,7 @@ func Test_injectOne(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			output, err := injectOne(tt.input, tt.jsonPath, tt.repl)
+			output, err := i.injectOne(tt.input, tt.jsonPath, tt.repl)
 
 			assert.NoError(t, err)
 			assert.Equal(t, tt.output, output)

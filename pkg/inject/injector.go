@@ -1,4 +1,4 @@
-package injector
+package inject
 
 import (
 	"encoding/json"
@@ -11,12 +11,20 @@ import (
 	"github.com/ShotaKitazawa/etcd-injector/pkg/rulesource"
 )
 
-func Inject(keyValues []etcdclient.KeyValue, rules []rulesource.Rule) (results []etcdclient.KeyValue, err error) {
+type Injector struct {
+	loggingEnable bool
+}
+
+func NewInjector(loggingEnable bool) *Injector {
+	return &Injector{loggingEnable}
+}
+
+func (i *Injector) Inject(keyValues []etcdclient.KeyValue, rules []rulesource.Rule) (results []etcdclient.KeyValue, err error) {
 	results = keyValues
 	for _, rule := range rules {
 		keyValues, results = results, []etcdclient.KeyValue{}
 		for _, kv := range keyValues {
-			result, err := injectOne(kv.Value, rule.JSONPath, rule.Repl)
+			result, err := i.injectOne(kv.Value, rule.JSONPath, rule.Repl)
 			if err != nil {
 				return nil, err
 			}
@@ -24,13 +32,14 @@ func Inject(keyValues []etcdclient.KeyValue, rules []rulesource.Rule) (results [
 				Key:   kv.Key,
 				Value: result,
 			})
+			i.printf("key: %s, based_value: %s, replaced_value: %s\n", kv.Key, kv.Value, result)
 		}
 	}
 	return results, nil
 }
 
-func injectOne(input []byte, jsonPath string, replInterface interface{}) ([]byte, error) {
-	repl, err := parseRepl(replInterface)
+func (i *Injector) injectOne(input []byte, jsonPath string, replInterface interface{}) ([]byte, error) {
+	repl, err := i.parseRepl(replInterface)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +69,7 @@ func injectOne(input []byte, jsonPath string, replInterface interface{}) ([]byte
 	return output, nil
 }
 
-func parseRepl(replInterface interface{}) (string, error) {
+func (i *Injector) parseRepl(replInterface interface{}) (string, error) {
 	switch t := replInterface.(type) {
 	case string:
 		return `"` + t + `"`, nil
@@ -70,5 +79,11 @@ func parseRepl(replInterface interface{}) (string, error) {
 		return strconv.Itoa(int(t)), nil
 	default:
 		return "", fmt.Errorf(`repl is unsupported type: %v`, t)
+	}
+}
+
+func (i *Injector) printf(format string, a ...interface{}) {
+	if i.loggingEnable {
+		fmt.Printf(format, a...)
 	}
 }
