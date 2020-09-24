@@ -20,6 +20,7 @@ type config struct {
 	SrcDirectory  string
 	DstDirectory  string
 	RulesFilepath string
+	LoggingEnable bool
 }
 
 func newApp() *cli.App {
@@ -60,6 +61,12 @@ func newApp() *cli.App {
 			Usage:    "path of file written injection rules",
 			Required: true,
 			EnvVars:  []string{"RULES_FILEPATH"},
+		},
+		&cli.BoolFlag{
+			Name:    "verbose",
+			Aliases: []string{"x"},
+			Usage:   "output results of replacement",
+			EnvVars: []string{"VERBOSE"},
 		},
 		// TODO
 		// &cli.StringFlag{
@@ -102,6 +109,7 @@ func newApp() *cli.App {
 			SrcDirectory:  c.String("src-directory"),
 			DstDirectory:  c.String("dst-directory"),
 			RulesFilepath: c.String("rules-filepath"),
+			LoggingEnable: c.Bool("verbose"),
 		})
 	}
 	app.EnableBashCompletion = true

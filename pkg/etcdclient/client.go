@@ -9,14 +9,16 @@ import (
 )
 
 type Config struct {
-	Endpoints []string
-	Username  string
-	Password  string
-	TLS       *tls.Config
+	Endpoints     []string
+	Username      string
+	Password      string
+	TLS           *tls.Config
+	LoggingEnable bool
 }
 
 type Client struct {
 	clientv3.Client
+	loggingEnable bool
 }
 
 type KeyValue struct {
@@ -35,7 +37,7 @@ func New(c Config) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Client{*cli}, nil
+	return &Client{*cli, c.LoggingEnable}, nil
 }
 
 func (c *Client) LsRecursive(dirname string) ([]KeyValue, error) {

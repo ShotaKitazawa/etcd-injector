@@ -4,26 +4,29 @@ import (
 	"strings"
 
 	"github.com/ShotaKitazawa/etcd-injector/pkg/etcdclient"
-	"github.com/ShotaKitazawa/etcd-injector/pkg/injector"
+	"github.com/ShotaKitazawa/etcd-injector/pkg/inject"
 	"github.com/ShotaKitazawa/etcd-injector/pkg/rulesource/file"
 )
 
 func Run(c config) error {
-	// generate src & dst etcd client
+	// generate structs
 	srcClient, err := etcdclient.New(etcdclient.Config{
-		Endpoints: c.SrcEndpoints,
+		Endpoints:     c.SrcEndpoints,
+		LoggingEnable: c.LoggingEnable,
 	})
 	if err != nil {
 		return err
 	}
 	defer srcClient.Close()
 	dstClient, err := etcdclient.New(etcdclient.Config{
-		Endpoints: c.DstEndpoints,
+		Endpoints:     c.DstEndpoints,
+		LoggingEnable: c.LoggingEnable,
 	})
 	if err != nil {
 		return err
 	}
 	defer dstClient.Close()
+	injector := inject.NewInjector(c.LoggingEnable)
 
 	// load rules
 	rules, err := file.GetRules(c.RulesFilepath)
