@@ -20,6 +20,7 @@ type config struct {
 	SrcDirectory  string
 	DstDirectory  string
 	RulesFilepath string
+	IgnoreKeys    []string
 	LoggingEnable bool
 }
 
@@ -61,6 +62,11 @@ func newApp() *cli.App {
 			Usage:    "path of file written injection rules",
 			Required: true,
 			EnvVars:  []string{"RULES_FILEPATH"},
+		},
+		&cli.StringSliceFlag{
+			Name:    "ignore",
+			Usage:   `specified "--ignore=/key", "xxx" is excluded from copy target`,
+			EnvVars: []string{"IGNORE_KEYS"},
 		},
 		&cli.BoolFlag{
 			Name:    "verbose",
@@ -109,6 +115,7 @@ func newApp() *cli.App {
 			SrcDirectory:  c.String("src-directory"),
 			DstDirectory:  c.String("dst-directory"),
 			RulesFilepath: c.String("rules-filepath"),
+			IgnoreKeys:    c.StringSlice("ignore"),
 			LoggingEnable: c.Bool("verbose"),
 		})
 	}

@@ -26,7 +26,7 @@ func Run(c config) error {
 		return err
 	}
 	defer dstClient.Close()
-	injector := inject.NewInjector(c.LoggingEnable)
+	injector := inject.NewInjector(c.LoggingEnable).WithIgnoreKeys(c.IgnoreKeys...)
 
 	// load rules
 	rules, err := file.GetRules(c.RulesFilepath)
