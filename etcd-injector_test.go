@@ -27,7 +27,9 @@ func Test(t *testing.T) {
 		{"normal_1", "/test/src/dir", "/test/dst/dir"},
 	}
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			config.SrcDirectory = tt.basePath
 			config.DstDirectory = tt.targetPath
 			err := Run(config)
