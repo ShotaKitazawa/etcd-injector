@@ -13,26 +13,64 @@ import (
 var etcdEndpointsForTest []string
 
 func Test(t *testing.T) {
-	config := config{
-		SrcEndpoints:  etcdEndpointsForTest,
-		DstEndpoints:  etcdEndpointsForTest,
-		RulesFilepath: "example/rules.yaml",
-	}
 	tests := []struct {
-		name       string
-		basePath   string
-		targetPath string
+		name   string
+		config config
 	}{
-		{"normal_1", "/test/src/1", "/test/dst/1"},
-		{"normal_1", "/test/src/dir", "/test/dst/dir"},
+		{"normal_1", // 1keyのコピー
+			config{
+				SrcEndpoints:  etcdEndpointsForTest,
+				DstEndpoints:  etcdEndpointsForTest,
+				SrcDirectory:  "/test/src/1",
+				DstDirectory:  "/test/dst/1",
+				RulesFilepath: "example/rules.yaml",
+			},
+		},
+		{"normal_2", // 複数keyのコピーが (srcにdirectoryを指定)
+			config{
+				SrcEndpoints:  etcdEndpointsForTest,
+				DstEndpoints:  etcdEndpointsForTest,
+				SrcDirectory:  "/test/src/dir",
+				DstDirectory:  "/test/dst/dir",
+				RulesFilepath: "example/rules.yaml",
+			},
+		},
+		{"normal_3", // --ignore-keysオプションの有効化
+			config{
+				SrcEndpoints:  etcdEndpointsForTest,
+				DstEndpoints:  etcdEndpointsForTest,
+				SrcDirectory:  "/test/src/dir",
+				DstDirectory:  "/test/dst/dir",
+				RulesFilepath: "example/rules.yaml",
+				IgnoreKeys:    []string{"/test/src/dir/1"},
+			},
+		},
+		{"normal_4", // --deleteオプションの有効化
+			config{
+				SrcEndpoints:  etcdEndpointsForTest,
+				DstEndpoints:  etcdEndpointsForTest,
+				SrcDirectory:  "/test/src/dir",
+				DstDirectory:  "/test/dst/dir",
+				RulesFilepath: "example/rules.yaml",
+				DeleteEnable:  true,
+			},
+		},
+		{"normal_5", // --verboseオプションの有効化
+			config{
+				SrcEndpoints:  etcdEndpointsForTest,
+				DstEndpoints:  etcdEndpointsForTest,
+				SrcDirectory:  "/test/src/dir",
+				DstDirectory:  "/test/dst/dir",
+				RulesFilepath: "example/rules.yaml",
+				LoggingEnable: true,
+			},
+		},
 	}
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			config.SrcDirectory = tt.basePath
-			config.DstDirectory = tt.targetPath
-			err := Run(config)
+			err := Run(tt.config)
 
 			assert.NoError(t, err)
 		})
