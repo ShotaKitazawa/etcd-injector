@@ -16,8 +16,12 @@ type config struct {
 	AppName       string
 	AppVersion    string
 	SrcEndpoints  []string
-	DstEndpoints  []string
+	SrcUsername   string
+	SrcPassword   string
 	SrcDirectory  string
+	DstEndpoints  []string
+	DstUsername   string
+	DstPassword   string
 	DstDirectory  string
 	RulesFilepath string
 	IgnoreKeys    []string
@@ -37,11 +41,15 @@ func newApp() *cli.App {
 			Required: true,
 			EnvVars:  []string{"ETCD_SRC_ENDPOINTS"},
 		},
-		&cli.StringSliceFlag{
-			Name:     "dst-endpoints",
-			Usage:    "destination endpoints of etcd",
-			Required: true,
-			EnvVars:  []string{"ETCD_DST_ENDPOINTS"},
+		&cli.StringFlag{
+			Name:    "src-username",
+			Usage:   "username of source etcd",
+			EnvVars: []string{"ETCD_SRC_USERNAME"},
+		},
+		&cli.StringFlag{
+			Name:    "src-password",
+			Usage:   "password of source etcd",
+			EnvVars: []string{"ETCD_SRC_PASSWORD"},
 		},
 		&cli.StringFlag{
 			Name:     "src-directory",
@@ -50,6 +58,32 @@ func newApp() *cli.App {
 			Required: true,
 			EnvVars:  []string{"ETCD_SRC_DIRECTORY"},
 		},
+		// TODO
+		// &cli.StringFlag{
+		//	Name:     "src-cafile",
+		// },
+		// &cli.StringFlag{
+		//	Name:     "src-certfile",
+		// },
+		// &cli.StringFlag{
+		//	Name:     "src-keyfile",
+		// },
+		&cli.StringSliceFlag{
+			Name:     "dst-endpoints",
+			Usage:    "destination endpoints of etcd",
+			Required: true,
+			EnvVars:  []string{"ETCD_DST_ENDPOINTS"},
+		},
+		&cli.StringFlag{
+			Name:    "dst-username",
+			Usage:   "username of destination etcd",
+			EnvVars: []string{"ETCD_DST_USERNAME"},
+		},
+		&cli.StringFlag{
+			Name:    "dst-password",
+			Usage:   "password of destination etcd",
+			EnvVars: []string{"ETCD_DST_PASSWORD"},
+		},
 		&cli.StringFlag{
 			Name:     "dst-directory",
 			Aliases:  []string{"d"},
@@ -57,6 +91,16 @@ func newApp() *cli.App {
 			Required: true,
 			EnvVars:  []string{"ETCD_DST_DIRECTORY"},
 		},
+		// TODO
+		// &cli.StringFlag{
+		//	Name:     "dst-cafile",
+		// },
+		// &cli.StringFlag{
+		//	Name:     "dst-certfile",
+		// },
+		// &cli.StringFlag{
+		//	Name:     "dst-keyfile",
+		// },
 		&cli.StringFlag{
 			Name:     "rules-filepath",
 			Aliases:  []string{"f"},
@@ -78,45 +122,18 @@ func newApp() *cli.App {
 			Aliases: []string{"x"},
 			Usage:   "output results of replacement",
 		},
-		// TODO
-		// &cli.StringFlag{
-		//	Name:     "src-username",
-		// },
-		// &cli.StringFlag{
-		//	Name:     "src-password",
-		// },
-		// &cli.StringFlag{
-		//	Name:     "src-cafile",
-		// },
-		// &cli.StringFlag{
-		//	Name:     "src-certfile",
-		// },
-		// &cli.StringFlag{
-		//	Name:     "src-keyfile",
-		// },
-		// &cli.StringFlag{
-		//	Name:     "dst-username",
-		// },
-		// &cli.StringFlag{
-		//	Name:     "dst-password",
-		// },
-		// &cli.StringFlag{
-		//	Name:     "dst-cafile",
-		// },
-		// &cli.StringFlag{
-		//	Name:     "dst-certfile",
-		// },
-		// &cli.StringFlag{
-		//	Name:     "dst-keyfile",
-		// },
 	}
 	app.Action = func(c *cli.Context) error {
 		return Run(config{
 			AppName:       appName,
 			AppVersion:    appVersion,
 			SrcEndpoints:  c.StringSlice("src-endpoints"),
-			DstEndpoints:  c.StringSlice("dst-endpoints"),
+			SrcUsername:   c.String("src-username"),
+			SrcPassword:   c.String("src-password"),
 			SrcDirectory:  c.String("src-directory"),
+			DstEndpoints:  c.StringSlice("dst-endpoints"),
+			DstUsername:   c.String("dst-username"),
+			DstPassword:   c.String("dst-password"),
 			DstDirectory:  c.String("dst-directory"),
 			RulesFilepath: c.String("rules-filepath"),
 			IgnoreKeys:    c.StringSlice("ignore"),

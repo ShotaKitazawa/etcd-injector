@@ -12,6 +12,8 @@ func Run(c config) error {
 	// generate structs
 	srcClient, err := etcdclient.New(etcdclient.Config{
 		Endpoints:     c.SrcEndpoints,
+		Username:      c.SrcUsername,
+		Password:      c.SrcPassword,
 		LoggingEnable: c.LoggingEnable,
 	})
 	if err != nil {
@@ -20,6 +22,8 @@ func Run(c config) error {
 	defer srcClient.Close()
 	dstClient, err := etcdclient.New(etcdclient.Config{
 		Endpoints:     c.DstEndpoints,
+		Username:      c.DstUsername,
+		Password:      c.DstPassword,
 		LoggingEnable: c.LoggingEnable,
 	})
 	if err != nil {
