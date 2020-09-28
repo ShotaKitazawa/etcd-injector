@@ -70,6 +70,18 @@ func (c *Client) Put(kv KeyValue) error {
 	return nil
 }
 
+func (c *Client) DeleteRecursive(dirname string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+
+	opts := []clientv3.OpOption{clientv3.WithPrefix()}
+	_, err := c.Client.Delete(ctx, dirname, opts...)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (c *Client) Close() error {
 	return c.Client.Close()
 }

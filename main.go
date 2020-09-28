@@ -21,6 +21,7 @@ type config struct {
 	DstDirectory  string
 	RulesFilepath string
 	IgnoreKeys    []string
+	DeleteEnable  bool
 	LoggingEnable bool
 }
 
@@ -69,10 +70,13 @@ func newApp() *cli.App {
 			EnvVars: []string{"IGNORE_KEYS"},
 		},
 		&cli.BoolFlag{
+			Name:  "delete",
+			Usage: `delete dst key if does not exist in src (like "rsync --delete")`,
+		},
+		&cli.BoolFlag{
 			Name:    "verbose",
 			Aliases: []string{"x"},
 			Usage:   "output results of replacement",
-			EnvVars: []string{"VERBOSE"},
 		},
 		// TODO
 		// &cli.StringFlag{
@@ -116,6 +120,7 @@ func newApp() *cli.App {
 			DstDirectory:  c.String("dst-directory"),
 			RulesFilepath: c.String("rules-filepath"),
 			IgnoreKeys:    c.StringSlice("ignore"),
+			DeleteEnable:  c.Bool("delete"),
 			LoggingEnable: c.Bool("verbose"),
 		})
 	}

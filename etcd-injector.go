@@ -46,6 +46,11 @@ func Run(c config) error {
 		return err
 	}
 
+	// delete all keys injected previous if --delete=true
+	if c.DeleteEnable {
+		dstClient.DeleteRecursive(c.DstDirectory)
+	}
+
 	// replace keys & set values to destination etcd
 	for _, kv := range results {
 		kv.Key = strings.Replace(kv.Key, c.SrcDirectory, c.DstDirectory, 1)
