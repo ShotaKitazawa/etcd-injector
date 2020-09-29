@@ -1,4 +1,4 @@
-project_name: minecraft-bot
+project_name: etcd-injector
 env:
   - GO111MODULE=on
 before:
@@ -9,10 +9,12 @@ builds:
     binary: etcd-injector
     ldflags:
       - -s -w
-      - -X github.com/ShotaKitazawa/etcd-injector/main.Version={{.Version}}
-      - -X github.com/ShotaKitazawa/etcd-injector/main.Revision={{.ShortCommit}}
+      - -X main.appName=etcd-injector
+      - -X main.appVersion="{{.Version}}({{.ShortCommit}})"
     env:
       - CGO_ENABLED=0
+    goarch:
+      - amd64
 archives:
   - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
     replacements:
@@ -26,4 +28,3 @@ archives:
         format: zip
 release:
   prerelease: auto
-
