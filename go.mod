@@ -10,7 +10,7 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway v1.15.0 // indirect
 	github.com/itchyny/gojq v0.12.1
 	github.com/prometheus/common v0.13.0 // indirect
-	github.com/stretchr/testify v1.6.1
+	github.com/stretchr/testify v1.7.0
 	github.com/tmc/grpc-websocket-proxy v0.0.0-20200427203606-3cfed13b9966 // indirect
 	github.com/urfave/cli/v2 v2.3.0
 	go.etcd.io/etcd v3.3.25+incompatible
